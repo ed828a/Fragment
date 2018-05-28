@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="first_image">First Image</string>
     <string name="second_image">Second Image</string>
+    <string name="drawer_open">Open Drawer Menu</string>
+    <string name="drawer_close">Close Drawer</string>
 </resources>
