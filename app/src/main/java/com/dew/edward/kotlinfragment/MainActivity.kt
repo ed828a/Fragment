@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,7 +14,20 @@ import com.dew.edward.kotlinfragment.fragments.FirstImageFragment
 import com.dew.edward.kotlinfragment.fragments.SecondImageFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
+    override fun onPageScrollStateChanged(state: Int) {
+    }
+
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+    }
+
+    override fun onPageSelected(position: Int) {
+        val currentMenuItem = bottomNavigationView.menu.getItem(position).itemId
+        if (currentMenuItem != bottomNavigationView.selectedItemId){
+            bottomNavigationView.menu.getItem(position).isChecked = true
+            bottomNavigationView.menu.findItem(bottomNavigationView.selectedItemId).isChecked = false
+        }
+    }
 
     private val drawerToggle by lazy {
         ActionBarDrawerToggle(this, drawerLayout, toolbar,
@@ -25,14 +39,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
-        drawerLayout.addDrawerListener(drawerToggle)
-        navigationView.setNavigationItemSelectedListener {
-            selectDrawerItem(it)
-            true
+
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            selectItem(it)
         }
+
+        navigationView.setNavigationItemSelectedListener {
+            selectItem(it)
+
+        }
+        drawerLayout.addDrawerListener(drawerToggle)
+
 
         val pagerAdapter = ImageFragmentPagerAdapter(supportFragmentManager)
         viewPager.adapter = pagerAdapter
+        viewPager.addOnPageChangeListener(this)
     }
 
     // configure configuration and synchronization between drawToggle and drawLayout
@@ -46,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         drawerToggle.onConfigurationChanged(newConfig)
     }
 
-    private fun selectDrawerItem(item: MenuItem){
+    private fun selectItem(item: MenuItem): Boolean {
 //        var fragment: Fragment? = null
 //        val fragmentClass = when(item.itemId){
 //            R.id.firstFragmentItem -> FirstImageFragment::class.java
@@ -62,22 +83,25 @@ class MainActivity : AppCompatActivity() {
 //        replaceFragment(fragment)
 
         // route to viewPager
-        when (item.itemId){
+        when (item.itemId) {
             R.id.firstFragmentItem -> viewPager.currentItem = 0
             R.id.secondFragmentItem -> viewPager.currentItem = 1
+            R.id.ThirdFragmentItem -> viewPager.currentItem = 2
             else -> viewPager.currentItem = 0
         }
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START)
 
-        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 
-    private fun replaceFragment(fragment: Fragment?) {
-        if (fragment != null){
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragmentContainer, fragment)
-            fragmentTransaction.commit()
-        }
-    }
+//    private fun replaceFragment(fragment: Fragment?) {
+//        if (fragment != null) {
+//            val fragmentTransaction = supportFragmentManager.beginTransaction()
+//            fragmentTransaction.replace(R.id.fragmentContainer, fragment)
+//            fragmentTransaction.commit()
+//        }
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
