@@ -8,6 +8,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
+import com.dew.edward.kotlinfragment.adapter.ImageFragmentPagerAdapter
 import com.dew.edward.kotlinfragment.fragments.FirstImageFragment
 import com.dew.edward.kotlinfragment.fragments.SecondImageFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() {
             selectDrawerItem(it)
             true
         }
+
+        val pagerAdapter = ImageFragmentPagerAdapter(supportFragmentManager)
+        viewPager.adapter = pagerAdapter
     }
 
     // configure configuration and synchronization between drawToggle and drawLayout
@@ -43,19 +47,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun selectDrawerItem(item: MenuItem){
-        var fragment: Fragment? = null
-        val fragmentClass = when(item.itemId){
-            R.id.firstFragmentItem -> FirstImageFragment::class.java
-            R.id.secondFragmentItem -> SecondImageFragment::class.java
-            else -> FirstImageFragment::class.java
-        }
-        try {
-            fragment = fragmentClass.newInstance() as Fragment
-        } catch (e: ClassCastException){
-            e.printStackTrace()
+//        var fragment: Fragment? = null
+//        val fragmentClass = when(item.itemId){
+//            R.id.firstFragmentItem -> FirstImageFragment::class.java
+//            R.id.secondFragmentItem -> SecondImageFragment::class.java
+//            else -> FirstImageFragment::class.java
+//        }
+//        try {
+//            fragment = fragmentClass.newInstance() as Fragment
+//        } catch (e: ClassCastException){
+//            e.printStackTrace()
+//        }
+//
+//        replaceFragment(fragment)
+
+        // route to viewPager
+        when (item.itemId){
+            R.id.firstFragmentItem -> viewPager.currentItem = 0
+            R.id.secondFragmentItem -> viewPager.currentItem = 1
+            else -> viewPager.currentItem = 0
         }
 
-        replaceFragment(fragment)
         drawerLayout.closeDrawer(GravityCompat.START)
     }
 
